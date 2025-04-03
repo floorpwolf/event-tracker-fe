@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
 function EventList({ events }) {
   if (events.length === 0) {
-    return <p>No events found. Add some events!</p>;
+    return <p>No events found. Add some events!</p>
   }
 
   return (
@@ -14,7 +14,7 @@ function EventList({ events }) {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
-export default EventList;
+export default EventList
