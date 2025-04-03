@@ -1,35 +1,32 @@
-import React from 'react';
-import { API_BASE_URL } from '../config';
+import React, { useState } from 'react'
+import RSVPForm from './RSVPForm'
 
-const FeedSection = () => {
+function FeedSection({ events }) {
+  const [selectedEvent, setSelectedEvent] = useState(null)
+
+  const handleRSVPClick = (event) => {
+    setSelectedEvent(event)
+  }
+
+  const closeRSVP = () => {
+    setSelectedEvent(null)
+  }
+
+  const submitRSVP = (rsvpData) => {
+    // For now, just log the RSVP data.
+    console.log('RSVP submitted for event:', selectedEvent.title, rsvpData)
+    alert(`RSVP submitted for "${selectedEvent.title}" by ${rsvpData.name}`)
+    closeRSVP()
+  }
+
   return (
-    <section id="feeds">
-      <h2>Subscribe to Feeds</h2>
-      <p>Stay updated with our event feeds:</p>
-      <ul>
-        <li>
-          <a 
-            href={`${API_BASE_URL}/api/atom`} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="feed-link"
-          >
-            Atom Feed
-          </a>
-        </li>
-        <li>
-          <a 
-            href={`${API_BASE_URL}/api/ics`} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="feed-link"
-          >
-            ICS Calendar Feed
-          </a>
-        </li>
-      </ul>
-    </section>
-  );
-};
-
-export default FeedSection;
+    <div className="feed-section">
+      <h2>Event Feed</h2>
+      {events.length === 0 ? (
+        <p>No events available. Please add some events!</p>
+      ) : (
+        <ul className="event-list">
+          {events.map((event, index) => (
+            <li key={index} className="event-card">
+              <strong>{event.title}</strong> — {event.date} <br />
+              {
