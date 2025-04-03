@@ -1,65 +1,49 @@
-import React, { useState } from 'react';
-import { API_BASE_URL } from '../config';
+import React, { useState } from 'react'
 
-export default function RSVPForm() {
-  const [rsvpData, setRsvpData] = useState({ event_id: '', user_name: '', user_email: '' });
+function RSVPForm({ event, onSubmit, onCancel }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/rsvps`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(rsvpData)
-      });
-      if (res.ok) {
-        alert('RSVP submitted successfully!');
-        setRsvpData({ event_id: '', user_name: '', user_email: '' });
-      }
-    } catch (err) {
-      console.error('Error submitting RSVP:', err);
-    }
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!name || !email) return
+
+    onSubmit({ name, email })
+    setName('')
+    setEmail('')
+  }
 
   return (
-    <section id="rsvp">
-      <h2>RSVP</h2>
-      <form onSubmit={handleSubmit} className="form-grid">
-        <div className="form-group">
-          <label htmlFor="rsvpEventId">Event ID:</label>
-          <input
-            type="number"
-            id="rsvpEventId"
-            className="form-control"
-            value={rsvpData.event_id}
-            onChange={(e) => setRsvpData({ ...rsvpData, event_id: e.target.value })}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="rsvpName">Your Name:</label>
-          <input
-            type="text"
-            id="rsvpName"
-            className="form-control"
-            value={rsvpData.user_name}
-            onChange={(e) => setRsvpData({ ...rsvpData, user_name: e.target.value })}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="rsvpEmail">Your Email:</label>
-          <input
-            type="email"
-            id="rsvpEmail"
-            className="form-control"
-            value={rsvpData.user_email}
-            onChange={(e) => setRsvpData({ ...rsvpData, user_email: e.target.value })}
-            required
-          />
-        </div>
-        <button type="submit" className="btn-primary">Submit RSVP</button>
-      </form>
-    </section>
-  );
+    <div className="rsvp-form-overlay">
+      <div className="rsvp-form-container">
+        <h3>RSVP for: {event.title}</h3>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Name:</label>
+            <input 
+              type="text" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required 
+            />
+          </div>
+          <div>
+            <label>Email:</label>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
+          </div>
+          <div className="rsvp-buttons">
+            <button type="submit">Submit RSVP</button>
+            <button type="button" onClick={onCancel}>Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 }
+
+export default RSVPForm
