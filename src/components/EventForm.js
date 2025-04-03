@@ -1,75 +1,53 @@
 import React, { useState } from 'react';
-import { API_BASE_URL } from '../config';
 
-export default function EventForm({ onEventAdded }) {
-  const [eventData, setEventData] = useState({ name: '', description: '', date: '', location: '' });
+function EventForm({ addEvent }) {
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState('');
+  const [description, setDescription] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/events`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(eventData)
-      });
-      if (res.ok) {
-        const newEvent = await res.json();
-        onEventAdded(newEvent);
-        setEventData({ name: '', description: '', date: '', location: '' });
-      }
-    } catch (err) {
-      console.error('Error adding event:', err);
-    }
+    if (!title || !date) return;
+
+    const newEvent = { title, date, description };
+    addEvent(newEvent);
+
+    // Reset form fields
+    setTitle('');
+    setDate('');
+    setDescription('');
   };
 
   return (
-    <section id="add-event">
-      <h2>Add Event</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="eventName">Event Name:</label>
-          <input
-            type="text"
-            id="eventName"
-            className="form-control"
-            value={eventData.name}
-            onChange={(e) => setEventData({ ...eventData, name: e.target.value })}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="eventDescription">Description:</label>
-          <textarea
-            id="eventDescription"
-            className="form-control"
-            value={eventData.description}
-            onChange={(e) => setEventData({ ...eventData, description: e.target.value })}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="eventDate">Date & Time:</label>
-          <input
-            type="datetime-local"
-            id="eventDate"
-            className="form-control"
-            value={eventData.date}
-            onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="eventLocation">Location:</label>
-          <input
-            type="text"
-            id="eventLocation"
-            className="form-control"
-            value={eventData.location}
-            onChange={(e) => setEventData({ ...eventData, location: e.target.value })}
-            required
-          />
-        </div>
-        <button type="submit" className="btn-primary">Add Event</button>
-      </form>
-    </section>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Title:</label>
+        <input 
+          type="text" 
+          value={title} 
+          onChange={(e) => setTitle(e.target.value)} 
+          required
+        />
+      </div>
+      <div>
+        <label>Date:</label>
+        <input 
+          type="date" 
+          value={date} 
+          onChange={(e) => setDate(e.target.value)} 
+          required
+        />
+      </div>
+      <div>
+        <label>Description:</label>
+        <textarea 
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)}
+        ></textarea>
+      </div>
+      <button type="submit">Add Event</button>
+    </form>
   );
 }
+
+export default EventForm;
