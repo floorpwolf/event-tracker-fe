@@ -1,18 +1,20 @@
 import React from 'react';
-import { format } from 'date-fns';
 
-export default function EventList({ events }) {
+function EventList({ events }) {
+  if (events.length === 0) {
+    return <p>No events found. Add some events!</p>;
+  }
+
   return (
-    <div className="event-grid">
-      {events.map((event) => (
-        <div key={event.id} className="event-card">
-          <h3>{event.name}</h3>
-          <p className="event-meta">
-            {format(new Date(event.date), 'MMM dd, yyyy - hh:mm a')} | {event.location}
-          </p>
-          <p>{event.description}</p>
-        </div>
+    <ul>
+      {events.map((event, index) => (
+        <li key={index}>
+          <strong>{event.title}</strong> — {event.date} <br />
+          {event.description}
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
+
+export default EventList;
